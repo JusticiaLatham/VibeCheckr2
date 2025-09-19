@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Gift, DollarSign, Clock, Zap, Star, Trophy } from 'lucide-react';
+import { Gift, DollarSign, Star, Trophy } from 'lucide-react';
 
 const PointsGauge = ({ 
   currentPoints = 0, 

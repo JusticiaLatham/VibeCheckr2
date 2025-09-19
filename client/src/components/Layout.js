@@ -12,12 +12,9 @@ import {
   LogOut,
   User,
   Star,
-  TrendingUp,
-  MessageSquare,
   BarChart,
   Zap,
   Slack,
-  Trophy,
   Gift,
   Rocket,
   Settings

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Trophy, Star, Award, Zap, Rocket } from 'lucide-react';
+import { Trophy, Award, Zap } from 'lucide-react';
 
 const AlienLadder = ({ 
   currentLevel = 1, 
