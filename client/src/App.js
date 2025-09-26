@@ -11,6 +11,7 @@ import Layout from './components/Layout';
 // import ProtectedRoute from './components/ProtectedRoute';
 
 // Pages
+import HomePage from './home/pages/HomePage';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
@@ -71,12 +72,13 @@ function App() {
             />
             <Routes>
               {/* Public routes */}
+              <Route path="/" element={<HomePage />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               
               {/* Development routes - no auth required */}
-              <Route path="/" element={<Layout />}>
-                <Route index element={<Navigate to="/dashboard" replace />} />
+              <Route path="/app" element={<Layout />}>
+                <Route index element={<Navigate to="/app/dashboard" replace />} />
                 <Route path="dashboard" element={<Dashboard />} />
                 <Route path="surveys" element={<Surveys />} />
                 <Route path="surveys/create" element={<CreateSurvey />} />
