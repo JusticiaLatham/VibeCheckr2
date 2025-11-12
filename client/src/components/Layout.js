@@ -27,25 +27,25 @@ const Layout = () => {
 
   const navigation = [
     // Top Level
-    { name: 'Company', href: '/company', icon: Building2, section: 'top' },
-    { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, section: 'top' },
-    { name: 'Calendar', href: '/calendar', icon: Calendar, section: 'top' },
-    { name: 'Slack', href: '/slack', icon: Slack, section: 'top' },
+    { name: 'Company', href: '/app/company', icon: Building2, section: 'top' },
+    { name: 'Dashboard', href: '/app/dashboard', icon: LayoutDashboard, section: 'top' },
+    { name: 'Calendar', href: '/app/calendar', icon: Calendar, section: 'top' },
+    { name: 'Slack', href: '/app/slack', icon: Slack, section: 'top' },
     
     // Surveys Section
-    { name: 'Surveys', href: '/surveys', icon: FileText, section: 'surveys' },
-    { name: 'Survey Analytics', href: '/analytics', icon: BarChart3, section: 'surveys' },
-    { name: 'Survey Notifications', href: '/notifications', icon: Bell, section: 'surveys' },
+    { name: 'Surveys', href: '/app/surveys', icon: FileText, section: 'surveys' },
+    { name: 'Survey Analytics', href: '/app/analytics', icon: BarChart3, section: 'surveys' },
+    { name: 'Survey Notifications', href: '/app/notifications', icon: Bell, section: 'surveys' },
     
     // Reviews Section
-    { name: 'Reviews', href: '/reviews', icon: Star, section: 'reviews' },
-    { name: 'Review Analytics', href: '/reviews', icon: BarChart, section: 'reviews', tab: 'analytics' },
-    { name: 'Review Notifications', href: '/reviews', icon: Zap, section: 'reviews', tab: 'notifications' },
+    { name: 'Reviews', href: '/app/reviews', icon: Star, section: 'reviews' },
+    { name: 'Review Analytics', href: '/app/reviews', icon: BarChart, section: 'reviews', tab: 'analytics' },
+    { name: 'Review Notifications', href: '/app/reviews', icon: Zap, section: 'reviews', tab: 'notifications' },
     
-    // Gamification Section
-    { name: 'Rewards', href: '/rewards', icon: Gift, section: 'gamification' },
-    { name: 'Career Progress', href: '/career-progress', icon: Rocket, section: 'gamification' },
-    { name: 'Settings', href: '/review-settings', icon: Settings, section: 'gamification' },
+    // Engagement Section
+    { name: 'Rewards', href: '/app/rewards', icon: Gift, section: 'gamification' },
+    { name: 'Career Progress', href: '/app/career-progress', icon: Rocket, section: 'gamification' },
+    { name: 'Settings', href: '/app/review-settings', icon: Settings, section: 'gamification' },
   ];
 
 
@@ -126,10 +126,11 @@ const Layout = () => {
                 })}
               </div>
 
-              {/* Gamification Section */}
+              {/* Engagement Section */}
               <div className="space-y-1">
                 <h3 className="px-3 text-xs font-semibold text-secondary-500 uppercase tracking-wider">
-                  Gamification
+                Engagement
+                Engagement
                 </h3>
                 {navigation.filter(item => item.section === 'gamification').map((item) => {
                   const Icon = item.icon;
@@ -237,10 +238,10 @@ const Layout = () => {
               })}
             </div>
 
-            {/* Gamification Section */}
+            {/* Engagement Section */}
             <div className="space-y-1">
               <h3 className="px-3 text-xs font-semibold text-secondary-500 uppercase tracking-wider">
-                Gamification
+                Engagement
               </h3>
               {navigation.filter(item => item.section === 'gamification').map((item) => {
                 const Icon = item.icon;

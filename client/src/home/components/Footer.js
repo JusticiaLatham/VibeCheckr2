@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Zap, Mail, Phone, MapPin, Twitter, Linkedin, Github } from 'lucide-react';
+import { Zap, Mail, Phone, MapPin, Linkedin } from 'lucide-react';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -9,30 +9,33 @@ const Footer = () => {
     Product: [
       { name: 'Features', href: '#features' },
       { name: 'How It Works', href: '#how-it-works' },
-      { name: 'Pricing', href: '#' },
+      { name: 'Pricing', href: '#pricing' },
       { name: 'Integrations', href: '#' },
       { name: 'API', href: '#' }
     ],
     Company: [
-      { name: 'About Us', href: '#' },
-      { name: 'Careers', href: '#' },
-      { name: 'Blog', href: '#' },
-      { name: 'Press', href: '#' },
-      { name: 'Contact', href: '#' }
+      { name: 'Company', href: '/company' },
+      { name: 'About Us', href: '/about' },
+      { name: 'Careers', href: '/careers' },
+      { name: 'Blog', href: '/blog' },
+      { name: 'Press', href: '/press' },
+      { name: 'Contact', href: '/contact' }
     ],
     Resources: [
-      { name: 'Help Center', href: '#' },
-      { name: 'Documentation', href: '#' },
-      { name: 'Community', href: '#' },
-      { name: 'Templates', href: '#' },
-      { name: 'Webinars', href: '#' }
+      { name: 'Resources', href: '/resources' },
+      { name: 'Help Center', href: '/help-center' },
+      { name: 'Documentation', href: '/documentation' },
+      { name: 'Community', href: '/community' },
+      { name: 'Templates', href: '/templates' },
+      { name: 'Webinars', href: '/webinars' }
     ],
     Legal: [
-      { name: 'Privacy Policy', href: '#' },
-      { name: 'Terms of Service', href: '#' },
-      { name: 'Cookie Policy', href: '#' },
-      { name: 'GDPR', href: '#' },
-      { name: 'Security', href: '#' }
+      { name: 'Legal', href: '/legal' },
+      { name: 'Privacy Policy', href: '/privacy' },
+      { name: 'Terms of Service', href: '/terms' },
+      { name: 'Cookie Policy', href: '/cookies' },
+      { name: 'GDPR', href: '/gdpr' },
+      { name: 'Security', href: '/security' }
     ]
   };
 
@@ -62,24 +65,18 @@ const Footer = () => {
               </div>
               <div className="flex items-center text-gray-400">
                 <Phone className="w-4 h-4 mr-3" />
-                <span>+1 (555) 123-4567</span>
+                <span>(202) 499-0035</span>
               </div>
               <div className="flex items-center text-gray-400">
                 <MapPin className="w-4 h-4 mr-3" />
-                <span>San Francisco, CA</span>
+                <span>Denver, CO</span>
               </div>
             </div>
 
             {/* Social Links */}
             <div className="flex space-x-4 mt-6">
               <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                <Twitter className="w-5 h-5" />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
                 <Linkedin className="w-5 h-5" />
-              </a>
-              <a href="#" className="text-gray-400 hover:text-white transition-colors">
-                <Github className="w-5 h-5" />
               </a>
             </div>
           </div>
@@ -89,16 +86,28 @@ const Footer = () => {
             <div key={category}>
               <h3 className="text-lg font-semibold mb-4">{category}</h3>
               <ul className="space-y-3">
-                {links.map((link) => (
-                  <li key={link.name}>
-                    <a
-                      href={link.href}
-                      className="text-gray-400 hover:text-white transition-colors"
-                    >
-                      {link.name}
-                    </a>
-                  </li>
-                ))}
+                {links.map((link) => {
+                  const isInternal = link.href.startsWith('/');
+                  return (
+                    <li key={link.name}>
+                      {isInternal ? (
+                        <Link
+                          to={link.href}
+                          className="text-gray-400 hover:text-white transition-colors"
+                        >
+                          {link.name}
+                        </Link>
+                      ) : (
+                        <a
+                          href={link.href}
+                          className="text-gray-400 hover:text-white transition-colors"
+                        >
+                          {link.name}
+                        </a>
+                      )}
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           ))}
@@ -130,15 +139,15 @@ const Footer = () => {
             © {currentYear} VibeCheckr. All rights reserved.
           </div>
           <div className="flex space-x-6 mt-4 md:mt-0">
-            <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">
+            <Link to="/privacy" className="text-gray-400 hover:text-white text-sm transition-colors">
               Privacy Policy
-            </a>
-            <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">
+            </Link>
+            <Link to="/terms" className="text-gray-400 hover:text-white text-sm transition-colors">
               Terms of Service
-            </a>
-            <a href="#" className="text-gray-400 hover:text-white text-sm transition-colors">
+            </Link>
+            <Link to="/cookies" className="text-gray-400 hover:text-white text-sm transition-colors">
               Cookie Policy
-            </a>
+            </Link>
           </div>
         </div>
       </div>

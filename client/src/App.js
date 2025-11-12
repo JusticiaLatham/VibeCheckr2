@@ -29,6 +29,24 @@ import GamificationDashboard from './pages/GamificationDashboard';
 import Rewards from './pages/Rewards';
 import CareerProgress from './pages/CareerProgress';
 import ReviewSettings from './pages/ReviewSettings';
+import CompanyOverview from './home/pages/CompanyOverview';
+import AboutPage from './home/pages/AboutPage';
+import CareersPage from './home/pages/CareersPage';
+import BlogPage from './home/pages/BlogPage';
+import PressPage from './home/pages/PressPage';
+import ContactPage from './home/pages/ContactPage';
+import ResourcesPage from './home/pages/ResourcesPage';
+import HelpCenterPage from './home/pages/HelpCenterPage';
+import DocumentationPage from './home/pages/DocumentationPage';
+import CommunityPage from './home/pages/CommunityPage';
+import TemplatesPage from './home/pages/TemplatesPage';
+import WebinarsPage from './home/pages/WebinarsPage';
+import LegalOverviewPage from './home/pages/LegalOverviewPage';
+import PrivacyPolicyPage from './home/pages/PrivacyPolicyPage';
+import TermsPage from './home/pages/TermsPage';
+import CookiePolicyPage from './home/pages/CookiePolicyPage';
+import GDPRPage from './home/pages/GDPRPage';
+import SecurityPage from './home/pages/SecurityPage';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -73,6 +91,24 @@ function App() {
             <Routes>
               {/* Public routes */}
               <Route path="/" element={<HomePage />} />
+              <Route path="/company" element={<CompanyOverview />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/careers" element={<CareersPage />} />
+              <Route path="/blog" element={<BlogPage />} />
+              <Route path="/press" element={<PressPage />} />
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/resources" element={<ResourcesPage />} />
+              <Route path="/help-center" element={<HelpCenterPage />} />
+              <Route path="/documentation" element={<DocumentationPage />} />
+              <Route path="/community" element={<CommunityPage />} />
+              <Route path="/templates" element={<TemplatesPage />} />
+              <Route path="/webinars" element={<WebinarsPage />} />
+              <Route path="/legal" element={<LegalOverviewPage />} />
+              <Route path="/privacy" element={<PrivacyPolicyPage />} />
+              <Route path="/terms" element={<TermsPage />} />
+              <Route path="/cookies" element={<CookiePolicyPage />} />
+              <Route path="/gdpr" element={<GDPRPage />} />
+              <Route path="/security" element={<SecurityPage />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               

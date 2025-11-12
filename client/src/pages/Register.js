@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Eye, EyeOff, Mail, Lock, User, Building2 } from 'lucide-react';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 const Register = () => {
+  const location = useLocation();
+
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -14,7 +16,12 @@ const Register = () => {
     companyName: '',
     industry: '',
     companySize: '',
-    domain: ''
+    domain: '',
+    cardNumber: '',
+    cardExpiry: '',
+    cardCvc: '',
+    billingPostalCode: '',
+    plan: 'trial'
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -22,6 +29,15 @@ const Register = () => {
   
   const { register } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (location.state?.selectedPlan) {
+      setFormData((prev) => ({
+        ...prev,
+        plan: location.state.selectedPlan
+      }));
+    }
+  }, [location.state]);
 
   const handleChange = (e) => {
     setFormData({
@@ -48,7 +64,16 @@ const Register = () => {
       companyName: formData.companyName,
       industry: formData.industry,
       companySize: formData.companySize,
-      domain: formData.domain
+      domain: formData.domain,
+      plan: formData.plan,
+      name: `${formData.firstName} ${formData.lastName}`.trim(),
+      company: formData.companyName,
+      paymentMethod: {
+        cardNumber: formData.cardNumber,
+        cardExpiry: formData.cardExpiry,
+        cardCvc: formData.cardCvc,
+        billingPostalCode: formData.billingPostalCode
+      }
     });
     
     if (result.success) {
@@ -297,6 +322,117 @@ const Register = () => {
                   We'll auto-detect this from your email if not provided
                 </p>
               </div>
+            </div>
+
+            {/* Billing Information */}
+            <div className="border-t border-secondary-200 pt-4">
+              <h3 className="text-lg font-medium text-secondary-900 mb-4 flex items-center justify-between">
+                Billing Details
+                <span className="text-xs font-semibold text-primary-600 uppercase tracking-wide">
+                  Powered by Stripe
+                </span>
+              </h3>
+              <p className="text-sm text-secondary-600 mb-4">
+                Select your plan and enter card details to activate your subscription. You can switch plans or cancel at any time.
+              </p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                <div>
+                  <label htmlFor="plan" className="block text-sm font-medium text-secondary-700">
+                    Plan
+                  </label>
+                  <select
+                    id="plan"
+                    name="plan"
+                    className="input mt-1"
+                    value={formData.plan}
+                    onChange={handleChange}
+                    required
+                  >
+                    <option value="trial">14-Day Free Trial</option>
+                    <option value="monthly">Monthly Plan – $650 / month</option>
+                    <option value="annual">Annual Plan – $6,000 / year</option>
+                  </select>
+                </div>
+                <div className="flex items-end">
+                  <div className="w-full text-sm text-secondary-500 bg-primary-50 border border-primary-100 rounded-lg px-4 py-3">
+                    {formData.plan === 'trial' && 'Trial converts to monthly billing after 14 days unless cancelled.'}
+                    {formData.plan === 'monthly' && 'Billed monthly at $650. Cancel any time in settings.'}
+                    {formData.plan === 'annual' && 'Billed annually at $6,000 with 2 months free vs monthly.'}
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="cardNumber" className="block text-sm font-medium text-secondary-700">
+                  Card Number
+                </label>
+                <input
+                  id="cardNumber"
+                  name="cardNumber"
+                  type="text"
+                  inputMode="numeric"
+                  required
+                  className="input mt-1"
+                  placeholder="4242 4242 4242 4242"
+                  value={formData.cardNumber}
+                  onChange={handleChange}
+                />
+              </div>
+
+              <div className="grid grid-cols-3 gap-4 mt-4">
+                <div>
+                  <label htmlFor="cardExpiry" className="block text-sm font-medium text-secondary-700">
+                    Expiration
+                  </label>
+                  <input
+                    id="cardExpiry"
+                    name="cardExpiry"
+                    type="text"
+                    inputMode="numeric"
+                    required
+                    className="input mt-1"
+                    placeholder="MM / YY"
+                    value={formData.cardExpiry}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="cardCvc" className="block text-sm font-medium text-secondary-700">
+                    CVC
+                  </label>
+                  <input
+                    id="cardCvc"
+                    name="cardCvc"
+                    type="text"
+                    inputMode="numeric"
+                    required
+                    className="input mt-1"
+                    placeholder="123"
+                    value={formData.cardCvc}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="billingPostalCode" className="block text-sm font-medium text-secondary-700">
+                    Billing ZIP / Postal
+                  </label>
+                  <input
+                    id="billingPostalCode"
+                    name="billingPostalCode"
+                    type="text"
+                    required
+                    className="input mt-1"
+                    placeholder="94103"
+                    value={formData.billingPostalCode}
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+
+              <p className="mt-3 text-xs text-secondary-500">
+                Transactions are processed securely via Stripe. We never store your full card details on our servers.
+              </p>
             </div>
           </div>
 

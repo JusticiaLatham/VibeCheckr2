@@ -5,9 +5,7 @@ import { ArrowRight, CheckCircle, Zap, Shield, Clock } from 'lucide-react';
 const CTASection = () => {
   const benefits = [
     "14-day free trial",
-    "No credit card required",
-    "Setup in under 5 minutes",
-    "24/7 customer support"
+    "Setup in under 5 minutes"
   ];
 
   return (
@@ -53,6 +51,7 @@ const CTASection = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
             <Link
               to="/register"
+              state={{ selectedPlan: 'trial' }}
               className="group bg-white text-blue-600 px-8 py-4 rounded-xl text-lg font-semibold hover:bg-blue-50 transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 flex items-center"
             >
               Start Your Free Trial

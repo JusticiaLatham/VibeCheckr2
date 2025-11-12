@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Play, Star, Users, TrendingUp, Shield } from 'lucide-react';
+import { ArrowRight, Play, Users, TrendingUp, Shield } from 'lucide-react';
 
 const HeroSection = () => {
   return (
@@ -16,12 +16,6 @@ const HeroSection = () => {
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center">
-          {/* Badge */}
-          <div className="inline-flex items-center px-4 py-2 rounded-full bg-blue-100 text-blue-800 text-sm font-medium mb-8">
-            <Star className="w-4 h-4 mr-2 fill-current" />
-            AI-Powered Team Management Platform
-          </div>
-
           {/* Main Heading */}
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-gray-900 mb-6">
             Transform Your

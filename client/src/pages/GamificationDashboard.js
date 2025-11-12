@@ -74,7 +74,7 @@ const GamificationDashboard = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-secondary-900">🎮 Gamification Dashboard</h1>
+          <h1 className="text-2xl font-bold text-secondary-900">🎮 Engagement Dashboard</h1>
           <p className="text-secondary-600">Track your progress, earn rewards, and climb the alien ladder!</p>
         </div>
         <div className="flex items-center space-x-2 text-sm text-secondary-600">
