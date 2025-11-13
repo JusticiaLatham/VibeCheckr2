@@ -1,5 +1,7 @@
 import React from 'react';
 import { Building2, Users, Target } from 'lucide-react';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 
 const stats = [
   { label: 'Teams Supported', value: '150+' },
@@ -27,7 +29,8 @@ const pillars = [
 
 const CompanyOverview = () => {
   return (
-    <div className="bg-gradient-to-br from-slate-50 via-white to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+      <Navbar />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 space-y-16">
         <section className="text-center space-y-6">
           <span className="inline-block px-4 py-1 rounded-full bg-blue-100 text-blue-700 text-sm font-semibold">
@@ -73,6 +76,7 @@ const CompanyOverview = () => {
           </p>
         </section>
       </div>
+      <Footer />
     </div>
   );
 };

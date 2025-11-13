@@ -1,5 +1,7 @@
 import React from 'react';
 import { Briefcase, Laptop, Heart } from 'lucide-react';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 
 const perks = [
   {
@@ -48,7 +50,8 @@ const openings = [
 
 const CareersPage = () => {
   return (
-    <div className="bg-gradient-to-br from-slate-50 via-white to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50">
+      <Navbar />
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20 space-y-16">
         <section className="space-y-6 text-center">
           <h1 className="text-4xl md:text-5xl font-bold text-secondary-900">Join the VibeCheckr Team</h1>
@@ -113,6 +116,7 @@ const CareersPage = () => {
           </div>
         </section>
       </div>
+      <Footer />
     </div>
   );
 };

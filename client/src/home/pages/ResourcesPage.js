@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { BookOpen, LifeBuoy, Users, LayoutGrid, Video } from 'lucide-react';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 
 const resourceCards = [
   {
@@ -37,7 +39,8 @@ const resourceCards = [
 
 const ResourcesPage = () => {
   return (
-    <div className="bg-gradient-to-br from-slate-50 via-white to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+      <Navbar />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 space-y-12">
         <section className="text-center space-y-4">
           <h1 className="text-4xl md:text-5xl font-bold text-secondary-900">VibeCheckr Resources</h1>
@@ -70,6 +73,7 @@ const ResourcesPage = () => {
           })}
         </section>
       </div>
+      <Footer />
     </div>
   );
 };

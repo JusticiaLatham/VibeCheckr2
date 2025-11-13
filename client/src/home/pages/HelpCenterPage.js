@@ -1,5 +1,7 @@
 import React from 'react';
 import { Search, MessageSquare, BookOpenCheck } from 'lucide-react';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 
 const topics = [
   {
@@ -18,7 +20,8 @@ const topics = [
 
 const HelpCenterPage = () => {
   return (
-    <div className="bg-gradient-to-br from-white via-blue-50 to-slate-50">
+    <div className="min-h-screen bg-gradient-to-br from-white via-blue-50 to-slate-50">
+      <Navbar />
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20 space-y-12">
         <section className="space-y-6 text-center">
           <h1 className="text-4xl md:text-5xl font-bold text-secondary-900">Help Center</h1>
@@ -55,6 +58,7 @@ const HelpCenterPage = () => {
           <button className="btn btn-primary">Contact Support</button>
         </section>
       </div>
+      <Footer />
     </div>
   );
 };
