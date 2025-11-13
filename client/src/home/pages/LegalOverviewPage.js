@@ -1,6 +1,8 @@
 import React from 'react';
 import { ShieldCheck, Scale, FileText } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 
 const legalLinks = [
   { title: 'Privacy Policy', description: 'Understand how we collect, use, and protect personal data.', href: '/privacy' },
@@ -12,7 +14,8 @@ const legalLinks = [
 
 const LegalOverviewPage = () => {
   return (
-    <div className="bg-gradient-to-br from-slate-50 via-white to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-purple-50">
+      <Navbar />
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20 space-y-12">
         <section className="space-y-6 text-center">
           <span className="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-primary-100 text-primary-700 text-sm font-semibold">
@@ -43,6 +46,7 @@ const LegalOverviewPage = () => {
           ))}
         </section>
       </div>
+      <Footer />
     </div>
   );
 };

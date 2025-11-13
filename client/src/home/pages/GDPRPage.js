@@ -1,8 +1,11 @@
 import React from 'react';
+import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 
 const GDPRPage = () => {
   return (
-    <div className="bg-gradient-to-br from-slate-50 via-white to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+      <Navbar />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 space-y-8">
         <section className="space-y-3">
           <h1 className="text-4xl md:text-5xl font-bold text-secondary-900">GDPR Commitment</h1>
@@ -33,6 +36,7 @@ const GDPRPage = () => {
           </p>
         </section>
       </div>
+      <Footer />
     </div>
   );
 };
