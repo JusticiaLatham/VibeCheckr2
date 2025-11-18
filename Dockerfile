@@ -15,6 +15,5 @@ COPY server ./server
 EXPOSE 5001
 
 # Start server
-WORKDIR /app
 CMD ["node", "server/index.js"]
 
