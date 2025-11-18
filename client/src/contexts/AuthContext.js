@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../config/axios';
 import toast from 'react-hot-toast';
 
 const AuthContext = createContext();
@@ -17,28 +17,25 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState(localStorage.getItem('token'));
 
-  // Configure axios defaults
-  useEffect(() => {
-    if (token) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    } else {
-      delete axios.defaults.headers.common['Authorization'];
-    }
-  }, [token]);
+  // Token is now handled by axios interceptor in config/axios.js
 
   // Check if user is logged in on app start
   useEffect(() => {
     const checkAuth = async () => {
       if (token) {
         try {
-          // For development, create a mock user if token exists
-          setUser({
-            id: 'dev-user-1',
-            name: 'Demo User',
-            email: 'demo@vibecheckr.com',
-            role: 'admin',
-            company: 'VibeCheckr Demo'
-          });
+          const response = await api.get('/api/auth/me');
+          if (response.data.success) {
+            setUser({
+              id: response.data.user.id,
+              name: `${response.data.user.firstName} ${response.data.user.lastName}`,
+              email: response.data.user.email,
+              firstName: response.data.user.firstName,
+              lastName: response.data.user.lastName,
+              role: response.data.user.role,
+              company: response.data.user.company
+            });
+          }
         } catch (error) {
           console.error('Auth check failed:', error);
           localStorage.removeItem('token');
@@ -53,22 +50,25 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      // For development, accept any email/password
-      const mockToken = 'dev-token-' + Date.now();
-      const mockUser = {
-        id: 'dev-user-1',
-        name: 'Demo User',
-        email: email,
-        role: 'admin',
-        company: 'VibeCheckr Demo'
-      };
+      const response = await api.post('/api/auth/login', { email, password });
       
-      localStorage.setItem('token', mockToken);
-      setToken(mockToken);
-      setUser(mockUser);
-      
-      toast.success('Login successful!');
-      return { success: true };
+      if (response.data.success) {
+        const { token, user } = response.data;
+        localStorage.setItem('token', token);
+        setToken(token);
+        setUser({
+          id: user.id,
+          name: `${user.firstName} ${user.lastName}`,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          role: user.role,
+          company: user.company
+        });
+        
+        toast.success('Login successful!');
+        return { success: true };
+      }
     } catch (error) {
       const message = error.response?.data?.message || 'Login failed';
       toast.error(message);
@@ -78,24 +78,47 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (userData) => {
     try {
-      // For development, create a mock user
-      const mockToken = 'dev-token-' + Date.now();
-      const mockUser = {
-        id: 'dev-user-1',
-        name: userData.name || 'Demo User',
+      // Prepare registration data for backend
+      const registrationData = {
         email: userData.email,
-        role: 'admin',
-        company: userData.company || 'VibeCheckr Demo'
+        password: userData.password,
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        companyName: userData.companyName,
+        industry: userData.industry,
+        companySize: userData.companySize,
+        domain: userData.domain,
+        plan: userData.plan, // Store plan info (trial, monthly, annual)
+        // Note: Payment method should be handled separately via Stripe
+        // For now, we'll just store the plan selection
       };
+
+      const response = await api.post('/api/auth/register', registrationData);
       
-      localStorage.setItem('token', mockToken);
-      setToken(mockToken);
-      setUser(mockUser);
-      
-      toast.success('Registration successful!');
-      return { success: true };
+      if (response.data.success) {
+        const { token, user } = response.data;
+        localStorage.setItem('token', token);
+        setToken(token);
+        setUser({
+          id: user.id,
+          name: `${user.firstName} ${user.lastName}`,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          role: user.role,
+          company: user.company
+        });
+        
+        toast.success('Registration successful!');
+        return { success: true };
+      }
     } catch (error) {
-      const message = error.response?.data?.message || 'Registration failed';
+      console.error('Registration error:', error);
+      const message = error.response?.data?.message || 
+                     error.response?.data?.errors?.[0]?.msg || 
+                     error.response?.data?.error ||
+                     error.message || 
+                     'Registration failed';
       toast.error(message);
       return { success: false, error: message };
     }
@@ -105,16 +128,29 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('token');
     setToken(null);
     setUser(null);
-    delete axios.defaults.headers.common['Authorization'];
     toast.success('Logged out successfully');
   };
 
   const updateProfile = async (profileData) => {
     try {
-      const response = await axios.put('/api/auth/profile', profileData);
-      setUser(response.data.user);
-      toast.success('Profile updated successfully');
-      return { success: true };
+      const response = await api.put('/api/auth/profile', profileData);
+      if (response.data.success) {
+        const user = response.data.user;
+        setUser({
+          id: user.id,
+          name: `${user.firstName} ${user.lastName}`,
+          email: user.email,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          role: user.role,
+          company: user.company,
+          department: user.department,
+          position: user.position,
+          preferences: user.preferences
+        });
+        toast.success('Profile updated successfully');
+        return { success: true };
+      }
     } catch (error) {
       const message = error.response?.data?.message || 'Profile update failed';
       toast.error(message);

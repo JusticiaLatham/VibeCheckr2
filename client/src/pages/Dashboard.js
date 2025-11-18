@@ -15,36 +15,53 @@ import {
   Award,
   MessageSquare
 } from 'lucide-react';
-import axios from 'axios';
+import api from '../config/axios';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 const Dashboard = () => {
-  const { data: dashboardData, isLoading } = useQuery({
+  const { data: dashboardData, isLoading, error: dashboardError } = useQuery({
     queryKey: ['dashboard'],
-    queryFn: () => axios.get('/api/company/dashboard').then(res => res.data.dashboard),
-    refetchInterval: 30000
+    queryFn: () => api.get('/api/company/dashboard').then(res => res.data.dashboard),
+    refetchInterval: 30000,
+    retry: false,
+    onError: (error) => {
+      console.error('Dashboard data error:', error);
+    }
   });
 
-  const { data: aiInsights } = useQuery({
+  const { data: aiInsights, error: aiError } = useQuery({
     queryKey: ['aiInsights'],
-    queryFn: () => axios.get('/api/ai/company-insights').then(res => res.data.insights),
-    refetchInterval: 60000
+    queryFn: () => api.get('/api/ai/company-insights').then(res => res.data.insights),
+    refetchInterval: 60000,
+    retry: false,
+    onError: (error) => {
+      console.error('AI insights error:', error);
+    }
   });
 
   // Fetch Reviews data
-  const { data: reviewsData } = useQuery({
+  const { data: reviewsData, error: reviewsError } = useQuery({
     queryKey: ['reviews'],
-    queryFn: () => axios.get('http://localhost:5001/api/reviews/dev').then(res => res.data),
-    refetchInterval: 30000
+    queryFn: () => api.get('/api/reviews/dev').then(res => res.data),
+    refetchInterval: 30000,
+    retry: false,
+    onError: (error) => {
+      console.error('Reviews data error:', error);
+    }
   });
 
-  const { data: reviewsAnalytics } = useQuery({
+  const { data: reviewsAnalytics, error: reviewsAnalyticsError } = useQuery({
     queryKey: ['reviewsAnalytics'],
-    queryFn: () => axios.get('http://localhost:5001/api/reviews/dev/analytics/overview').then(res => res.data),
-    refetchInterval: 30000
+    queryFn: () => api.get('/api/reviews/dev/analytics/overview').then(res => res.data),
+    refetchInterval: 30000,
+    retry: false,
+    onError: (error) => {
+      console.error('Reviews analytics error:', error);
+    }
   });
 
-  if (isLoading) {
+  // Show loading only if we're actually loading and have no data
+  if (isLoading && !dashboardData) {
     return (
       <div className="flex items-center justify-center h-64">
         <LoadingSpinner size="lg" />
@@ -52,7 +69,13 @@ const Dashboard = () => {
     );
   }
 
-  const stats = dashboardData?.stats || {};
+  // Use default values if data is not available
+  const stats = dashboardData?.stats || {
+    totalSurveys: 0,
+    totalResponses: 0,
+    totalReviews: 0,
+    averageRating: 0
+  };
   const recentSurveys = dashboardData?.recentSurveys || [];
   const responseTrends = dashboardData?.responseTrends || {};
   const reviews = reviewsData?.reviews || [];

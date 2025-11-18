@@ -66,21 +66,26 @@ const companySchema = new mongoose.Schema({
   subscription: {
     plan: {
       type: String,
-      enum: ['starter', 'professional', 'enterprise'],
-      default: 'starter'
+      enum: ['trial', 'monthly', 'annual', 'starter', 'professional', 'enterprise'],
+      default: 'trial'
     },
     status: {
       type: String,
-      enum: ['active', 'cancelled', 'suspended'],
-      default: 'active'
+      enum: ['active', 'cancelled', 'suspended', 'trial'],
+      default: 'trial'
     },
     startDate: Date,
-    endDate: Date
+    endDate: Date,
+    billingCycle: {
+      type: String,
+      enum: ['monthly', 'annual'],
+      default: null
+    }
   },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true
+    required: false // Will be set after user creation
   }
 }, {
   timestamps: true

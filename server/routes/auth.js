@@ -34,7 +34,8 @@ router.post('/register', [
       companyName,
       industry,
       companySize,
-      domain
+      domain,
+      plan = 'trial'
     } = req.body;
 
     // Check if user already exists
@@ -46,12 +47,29 @@ router.post('/register', [
       });
     }
 
+    // Determine subscription details based on plan
+    const subscriptionStatus = plan === 'trial' ? 'trial' : 'active';
+    const billingCycle = plan === 'annual' ? 'annual' : plan === 'monthly' ? 'monthly' : null;
+    const startDate = new Date();
+    const endDate = plan === 'trial' 
+      ? new Date(Date.now() + 14 * 24 * 60 * 60 * 1000) // 14 days for trial
+      : plan === 'annual'
+      ? new Date(Date.now() + 365 * 24 * 60 * 60 * 1000) // 1 year
+      : null;
+
     // Create company first
     const company = new Company({
       name: companyName,
       domain: domain || email.split('@')[1],
       industry: industry,
       size: companySize,
+      subscription: {
+        plan: plan,
+        status: subscriptionStatus,
+        startDate: startDate,
+        endDate: endDate,
+        billingCycle: billingCycle
+      },
       createdBy: null // Will be updated after user creation
     });
 

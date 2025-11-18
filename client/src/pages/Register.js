@@ -7,6 +7,11 @@ import LoadingSpinner from '../components/LoadingSpinner';
 const Register = () => {
   const location = useLocation();
 
+  // Demo account configuration
+  const DEMO_EMAIL = 'demo@vibecheckr.com';
+  const DEMO_PASSWORD = 'demo123';
+  const MAX_DEMO_USES = 10;
+
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -27,8 +32,24 @@ const Register = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   
-  const { register } = useAuth();
+  const { register, login } = useAuth();
   const navigate = useNavigate();
+
+  // Check if this is a demo account
+  const isDemoAccount = formData.email.toLowerCase() === DEMO_EMAIL.toLowerCase() && 
+                        formData.password === DEMO_PASSWORD;
+
+  // Get demo usage count from localStorage
+  const getDemoUsageCount = () => {
+    const count = localStorage.getItem('demo_account_uses');
+    return count ? parseInt(count, 10) : 0;
+  };
+
+  // Increment demo usage count
+  const incrementDemoUsage = () => {
+    const currentCount = getDemoUsageCount();
+    localStorage.setItem('demo_account_uses', (currentCount + 1).toString());
+  };
 
   useEffect(() => {
     if (location.state?.selectedPlan) {
@@ -53,10 +74,19 @@ const Register = () => {
       alert('Passwords do not match');
       return;
     }
+
+    // Check demo account limit
+    if (isDemoAccount) {
+      const usageCount = getDemoUsageCount();
+      if (usageCount >= MAX_DEMO_USES) {
+        alert(`Demo account limit reached (${MAX_DEMO_USES} uses). Please use a different email to create a real account.`);
+        return;
+      }
+    }
     
     setLoading(true);
     
-    const result = await register({
+    const registrationData = {
       firstName: formData.firstName,
       lastName: formData.lastName,
       email: formData.email,
@@ -67,17 +97,43 @@ const Register = () => {
       domain: formData.domain,
       plan: formData.plan,
       name: `${formData.firstName} ${formData.lastName}`.trim(),
-      company: formData.companyName,
-      paymentMethod: {
+      company: formData.companyName
+    };
+
+    // Only include payment method if not a demo account
+    if (!isDemoAccount) {
+      registrationData.paymentMethod = {
         cardNumber: formData.cardNumber,
         cardExpiry: formData.cardExpiry,
         cardCvc: formData.cardCvc,
         billingPostalCode: formData.billingPostalCode
-      }
-    });
+      };
+    }
+    
+    const result = await register(registrationData);
     
     if (result.success) {
-      navigate('/dashboard');
+      // Increment demo usage if this was a demo account
+      if (isDemoAccount) {
+        incrementDemoUsage();
+        const remaining = MAX_DEMO_USES - getDemoUsageCount();
+        alert(`Demo account created! (${remaining} demo uses remaining)`);
+      }
+      navigate('/app/dashboard');
+    } else {
+      // If demo account already exists, try to log in instead
+      if (isDemoAccount && result.error && result.error.includes('already exists')) {
+        const loginResult = await login(formData.email, formData.password);
+        if (loginResult.success) {
+          alert('Demo account already exists. Logged you in!');
+          navigate('/app/dashboard');
+          return;
+        }
+      }
+      // Show the actual error message
+      if (result.error) {
+        console.error('Registration error:', result.error);
+      }
     }
     
     setLoading(false);
@@ -328,13 +384,31 @@ const Register = () => {
             <div className="border-t border-secondary-200 pt-4">
               <h3 className="text-lg font-medium text-secondary-900 mb-4 flex items-center justify-between">
                 Billing Details
-                <span className="text-xs font-semibold text-primary-600 uppercase tracking-wide">
-                  Powered by Stripe
-                </span>
+                {!isDemoAccount && (
+                  <span className="text-xs font-semibold text-primary-600 uppercase tracking-wide">
+                    Powered by Stripe
+                  </span>
+                )}
+                {isDemoAccount && (
+                  <span className="text-xs font-semibold text-green-600 uppercase tracking-wide bg-green-50 px-2 py-1 rounded">
+                    Demo Mode
+                  </span>
+                )}
               </h3>
-              <p className="text-sm text-secondary-600 mb-4">
-                Select your plan and enter card details to activate your subscription. You can switch plans or cancel at any time.
-              </p>
+              {isDemoAccount ? (
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
+                  <p className="text-sm text-green-800 font-medium mb-1">
+                    🎉 Demo Account Detected
+                  </p>
+                  <p className="text-xs text-green-700">
+                    Credit card not required for demo accounts. ({MAX_DEMO_USES - getDemoUsageCount()} demo uses remaining)
+                  </p>
+                </div>
+              ) : (
+                <p className="text-sm text-secondary-600 mb-4">
+                  Select your plan and enter card details to activate your subscription. You can switch plans or cancel at any time.
+                </p>
+              )}
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                 <div>
@@ -363,76 +437,80 @@ const Register = () => {
                 </div>
               </div>
 
-              <div>
-                <label htmlFor="cardNumber" className="block text-sm font-medium text-secondary-700">
-                  Card Number
-                </label>
-                <input
-                  id="cardNumber"
-                  name="cardNumber"
-                  type="text"
-                  inputMode="numeric"
-                  required
-                  className="input mt-1"
-                  placeholder="4242 4242 4242 4242"
-                  value={formData.cardNumber}
-                  onChange={handleChange}
-                />
-              </div>
+              {!isDemoAccount && (
+                <>
+                  <div>
+                    <label htmlFor="cardNumber" className="block text-sm font-medium text-secondary-700">
+                      Card Number
+                    </label>
+                    <input
+                      id="cardNumber"
+                      name="cardNumber"
+                      type="text"
+                      inputMode="numeric"
+                      required
+                      className="input mt-1"
+                      placeholder="4242 4242 4242 4242"
+                      value={formData.cardNumber}
+                      onChange={handleChange}
+                    />
+                  </div>
 
-              <div className="grid grid-cols-3 gap-4 mt-4">
-                <div>
-                  <label htmlFor="cardExpiry" className="block text-sm font-medium text-secondary-700">
-                    Expiration
-                  </label>
-                  <input
-                    id="cardExpiry"
-                    name="cardExpiry"
-                    type="text"
-                    inputMode="numeric"
-                    required
-                    className="input mt-1"
-                    placeholder="MM / YY"
-                    value={formData.cardExpiry}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="cardCvc" className="block text-sm font-medium text-secondary-700">
-                    CVC
-                  </label>
-                  <input
-                    id="cardCvc"
-                    name="cardCvc"
-                    type="text"
-                    inputMode="numeric"
-                    required
-                    className="input mt-1"
-                    placeholder="123"
-                    value={formData.cardCvc}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="billingPostalCode" className="block text-sm font-medium text-secondary-700">
-                    Billing ZIP / Postal
-                  </label>
-                  <input
-                    id="billingPostalCode"
-                    name="billingPostalCode"
-                    type="text"
-                    required
-                    className="input mt-1"
-                    placeholder="94103"
-                    value={formData.billingPostalCode}
-                    onChange={handleChange}
-                  />
-                </div>
-              </div>
+                  <div className="grid grid-cols-3 gap-4 mt-4">
+                    <div>
+                      <label htmlFor="cardExpiry" className="block text-sm font-medium text-secondary-700">
+                        Expiration
+                      </label>
+                      <input
+                        id="cardExpiry"
+                        name="cardExpiry"
+                        type="text"
+                        inputMode="numeric"
+                        required
+                        className="input mt-1"
+                        placeholder="MM / YY"
+                        value={formData.cardExpiry}
+                        onChange={handleChange}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="cardCvc" className="block text-sm font-medium text-secondary-700">
+                        CVC
+                      </label>
+                      <input
+                        id="cardCvc"
+                        name="cardCvc"
+                        type="text"
+                        inputMode="numeric"
+                        required
+                        className="input mt-1"
+                        placeholder="123"
+                        value={formData.cardCvc}
+                        onChange={handleChange}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="billingPostalCode" className="block text-sm font-medium text-secondary-700">
+                        Billing ZIP / Postal
+                      </label>
+                      <input
+                        id="billingPostalCode"
+                        name="billingPostalCode"
+                        type="text"
+                        required
+                        className="input mt-1"
+                        placeholder="94103"
+                        value={formData.billingPostalCode}
+                        onChange={handleChange}
+                      />
+                    </div>
+                  </div>
 
-              <p className="mt-3 text-xs text-secondary-500">
-                Transactions are processed securely via Stripe. We never store your full card details on our servers.
-              </p>
+                  <p className="mt-3 text-xs text-secondary-500">
+                    Transactions are processed securely via Stripe. We never store your full card details on our servers.
+                  </p>
+                </>
+              )}
             </div>
           </div>
 
